@@ -304,7 +304,8 @@ class BankStatementImportLog(Document):
 			if isinstance(date, datetime):
 				tx_date = date
 			else:
-				tx_date = datetime.strptime(date, date_format)
+				row_date_format = transaction.get("date_format") or date_format
+				tx_date = datetime.strptime(date, row_date_format)
 
 			if statement_start_date is None or tx_date < statement_start_date:
 				statement_start_date = tx_date
@@ -886,7 +887,8 @@ def compute_final_transactions(transaction_rows: list, date_format: str, amount_
 		if isinstance(date, datetime):
 			date = date.strftime("%Y-%m-%d")
 		else:
-			date = datetime.strptime(date, date_format).strftime("%Y-%m-%d")
+			row_date_format = transaction.get("date_format") or date_format
+			date = datetime.strptime(date, row_date_format).strftime("%Y-%m-%d")
 
 		withdrawal, deposit = parse_amount(transaction)
 		final_transactions.append(
